@@ -1,0 +1,17 @@
+# Logger configurations.
+[logger]
+    Path   = "/tmp/log/server"
+    Level  = "all"
+    Stdout = true
+
+[database]
+   [[database.default]]
+       link  = "mysql:root:123456@tcp(159.75.125.159:3307)/library"
+       role  = "master"
+       debug = true
+
+    # 数据库日志对象配置
+    [database.logger]
+        Path   = "/tmp/log/sql"
+        Level  = "all"
+        Stdout = true

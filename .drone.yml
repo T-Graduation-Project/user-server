@@ -1,0 +1,29 @@
+kind: pipeline
+type: docker
+name: default
+
+trigger:
+  event:
+    - push
+  branch:
+    - main
+
+steps:
+  - name: build
+    pull: if-not-exists
+    image: golang
+    commands:
+      - go env -w GOPROXY=https://goproxy.cn,direct
+      - go env
+      - go build
+      - go test
+  - name: docker
+    pull: if-not-exists
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: docker_user
+      password:
+        from_secret: docker_pwd
+      repo: tifinity/demo-server
+      tags: latest

@@ -1,0 +1,42 @@
+syntax = "proto3";
+package user;
+
+service User {
+    rpc SignUp(SignUpReq) returns (SignUpRsp) {}
+    rpc SignIn(SignInReq) returns (SignInRsp) {}
+    rpc Auth(AuthReq) returns (AuthRsp) {}
+}
+
+message SignUpReq {
+    string username = 1;
+    string password = 2;
+    string re_password = 3;
+    int64 sex = 4;
+    string phone = 5;
+}
+
+message SignUpRsp {
+    int64 code = 1;
+    string msg = 2;
+    string token = 3;
+}
+
+message SignInReq {
+    string username = 1;
+    string password = 2;
+}
+
+message SignInRsp {
+    int64 code = 1;
+    string msg = 2;
+    string token = 3;
+}
+
+message AuthReq {
+    string token = 1;
+}
+
+message AuthRsp {
+    int64 code = 1;
+    string msg = 2;
+}
