@@ -3,7 +3,7 @@
 ## RUN
 ~~~bash
 # 本地运行
-protoc --gofast_out=plugins=grpc:. protocol/borrow.proto
+protoc --gofast_out=plugins=grpc:. protocol/user.proto
 go run main.go
 
 # 构建镜像并运行

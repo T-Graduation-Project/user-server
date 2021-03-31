@@ -25,7 +25,7 @@ func main() {
 	//	log.Fatalf("could not greet: %v", err)
 	//}
 	//log.Printf("####### get server Greeting response: %s", r)
-
+	//
 	req2 := &protobuf.SignInReq{
 		Username: "test",
 		Password: "test",
@@ -35,7 +35,7 @@ func main() {
 		log.Fatalf("could not greet: %v", err)
 	}
 	log.Printf("####### get server Greeting response: %s", r2)
-
+	// 认证 token
 	req3 := &protobuf.AuthReq{
 		Token: r2.Token,
 	}

@@ -31,17 +31,22 @@ func Auth(req *protobuf.AuthReq) (*protobuf.AuthRsp, error) {
 		Code: 1,
 		Msg:  "Auth filed",
 	}
-	token := req.Token
-	t, err := jwt.ParseWithClaims(token, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(req.Token, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return privateKey, nil
 	})
-	// 解密转换类型并返回
-	if claims, ok := t.Claims.(*CustomClaims); ok && t.Valid {
-		log.Info(claims)
-	} else {
-		log.Info(err)
+	log.Info("token:", token.Raw)
+	if !token.Valid || err != nil {
+		return rsp, err
 	}
-
+	claims, ok := token.Claims.(*CustomClaims)
+	if !ok {
+		rsp.Msg = "claims change error"
+		return rsp, err
+	}
+	rsp.Username = claims.Username
+	rsp.Password = claims.Password
+	rsp.Code = 0
+	rsp.Msg = "success"
 	return rsp, err
 }
 
@@ -64,7 +69,7 @@ func SignIn(req *protobuf.SignInReq) (*protobuf.SignInRsp, error) {
 	if user.Map()["password"] != req.Password {
 		return rsp, err
 	}
-	// Check TODO
+	// TODO 检查账号
 	expireTime := time.Now().Add(time.Hour * 24 * 3).Unix()
 	claims := CustomClaims{
 		req.Username,

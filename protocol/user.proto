@@ -39,4 +39,6 @@ message AuthReq {
 message AuthRsp {
     int64 code = 1;
     string msg = 2;
+    string username = 3;
+    string password = 4;
 }
