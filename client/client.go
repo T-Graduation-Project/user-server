@@ -3,21 +3,15 @@ package main
 import (
 	"context"
 	"github.com/T-Graduation-Project/user-server/protobuf"
-	"google.golang.org/grpc"
+	"github.com/micro/go-micro/v2"
 	"log"
 )
 
-const (
-	address = "127.0.0.1:8003"
-)
-
 func main() {
-	conn, err := grpc.Dial(address, grpc.WithInsecure())
-	if err != nil {
-		log.Fatalf("did not connect: %v", err)
-	}
-	defer conn.Close()
-	c := protobuf.NewUserClient(conn)
+	service := micro.NewService(micro.Name("borrow.client"))
+	service.Init()
+	c := protobuf.NewUserService("user", service.Client())
+
 	//// 获取书籍列表
 	//req := &protobuf.SignUpReq{}
 	//r, err := c.SignUp(context.Background(), req)
