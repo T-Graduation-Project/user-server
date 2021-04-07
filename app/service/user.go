@@ -4,10 +4,22 @@ import (
 	"context"
 	"github.com/T-Graduation-Project/user-server/protobuf"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gogf/gf/frame/g"
 	"time"
 )
 
 type UserApi struct{}
+
+var (
+	db         = g.DB("default")
+	log        = g.Log()
+	privateKey = []byte("`xs#a_1-!")
+)
+
+type CustomClaims struct {
+	protobuf.UserInfo
+	jwt.StandardClaims
+}
 
 func (u UserApi) SignUp(
 	ctx context.Context, req *protobuf.SignUpReq, rsp *protobuf.SignUpRsp) error {
