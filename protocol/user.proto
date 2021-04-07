@@ -5,7 +5,6 @@ service User {
     rpc SignUp(SignUpReq) returns (SignUpRsp) {}
     rpc SignIn(SignInReq) returns (SignInRsp) {}
     rpc GetPersonalInfo(GetPersonalInfoReq) returns (GetPersonalInfoRsp) {}
-    rpc Auth(AuthReq) returns (AuthRsp) {}
 }
 
 message UserInfo {
@@ -39,17 +38,6 @@ message SignInRsp {
     int64 code = 1;
     string msg = 2;
     string token = 3;
-}
-
-message AuthReq {
-    string token = 1;
-}
-
-message AuthRsp {
-    int64 code = 1;
-    string msg = 2;
-    string username = 3;
-    string password = 4;
 }
 
 message GetPersonalInfoReq {}

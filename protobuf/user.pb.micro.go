@@ -45,7 +45,6 @@ type UserService interface {
 	SignUp(ctx context.Context, in *SignUpReq, opts ...client.CallOption) (*SignUpRsp, error)
 	SignIn(ctx context.Context, in *SignInReq, opts ...client.CallOption) (*SignInRsp, error)
 	GetPersonalInfo(ctx context.Context, in *GetPersonalInfoReq, opts ...client.CallOption) (*GetPersonalInfoRsp, error)
-	Auth(ctx context.Context, in *AuthReq, opts ...client.CallOption) (*AuthRsp, error)
 }
 
 type userService struct {
@@ -90,23 +89,12 @@ func (c *userService) GetPersonalInfo(ctx context.Context, in *GetPersonalInfoRe
 	return out, nil
 }
 
-func (c *userService) Auth(ctx context.Context, in *AuthReq, opts ...client.CallOption) (*AuthRsp, error) {
-	req := c.c.NewRequest(c.name, "User.Auth", in)
-	out := new(AuthRsp)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // Server API for User service
 
 type UserHandler interface {
 	SignUp(context.Context, *SignUpReq, *SignUpRsp) error
 	SignIn(context.Context, *SignInReq, *SignInRsp) error
 	GetPersonalInfo(context.Context, *GetPersonalInfoReq, *GetPersonalInfoRsp) error
-	Auth(context.Context, *AuthReq, *AuthRsp) error
 }
 
 func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.HandlerOption) error {
@@ -114,7 +102,6 @@ func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.Handl
 		SignUp(ctx context.Context, in *SignUpReq, out *SignUpRsp) error
 		SignIn(ctx context.Context, in *SignInReq, out *SignInRsp) error
 		GetPersonalInfo(ctx context.Context, in *GetPersonalInfoReq, out *GetPersonalInfoRsp) error
-		Auth(ctx context.Context, in *AuthReq, out *AuthRsp) error
 	}
 	type User struct {
 		user
@@ -137,8 +124,4 @@ func (h *userHandler) SignIn(ctx context.Context, in *SignInReq, out *SignInRsp)
 
 func (h *userHandler) GetPersonalInfo(ctx context.Context, in *GetPersonalInfoReq, out *GetPersonalInfoRsp) error {
 	return h.UserHandler.GetPersonalInfo(ctx, in, out)
-}
-
-func (h *userHandler) Auth(ctx context.Context, in *AuthReq, out *AuthRsp) error {
-	return h.UserHandler.Auth(ctx, in, out)
 }
