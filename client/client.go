@@ -12,14 +12,20 @@ func main() {
 	service.Init()
 	c := protobuf.NewUserService("user", service.Client())
 
-	//// 获取书籍列表
-	//req := &protobuf.SignUpReq{}
-	//r, err := c.SignUp(context.Background(), req)
-	//if err != nil {
-	//	log.Fatalf("could not greet: %v", err)
-	//}
-	//log.Printf("####### get server Greeting response: %s", r)
-	//
+	// 获取书籍列表
+	req := &protobuf.SignUpReq{
+		Username:   "test1",
+		Password:   "test",
+		RePassword: "test",
+		Sex:        0,
+		Phone:      "123",
+	}
+	r, err := c.SignUp(context.Background(), req)
+	if err != nil {
+		log.Fatalf("could not greet: %v", err)
+	}
+	log.Printf("####### get server Greeting response: %s", r)
+
 	req2 := &protobuf.SignInReq{
 		Username: "test",
 		Password: "test",

@@ -23,7 +23,6 @@ func (u UserApi) Auth(
 	ctx context.Context, req *protobuf.AuthReq, rsp *protobuf.AuthRsp) error {
 	rsp.Code = 1
 	rsp.Msg = "Auth filed"
-
 	token, err := jwt.ParseWithClaims(req.Token, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return privateKey, nil
 	})

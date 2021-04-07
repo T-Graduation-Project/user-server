@@ -44,6 +44,7 @@ func NewUserEndpoints() []*api.Endpoint {
 type UserService interface {
 	SignUp(ctx context.Context, in *SignUpReq, opts ...client.CallOption) (*SignUpRsp, error)
 	SignIn(ctx context.Context, in *SignInReq, opts ...client.CallOption) (*SignInRsp, error)
+	GetPersonalInfo(ctx context.Context, in *GetPersonalInfoReq, opts ...client.CallOption) (*GetPersonalInfoRsp, error)
 	Auth(ctx context.Context, in *AuthReq, opts ...client.CallOption) (*AuthRsp, error)
 }
 
@@ -79,6 +80,16 @@ func (c *userService) SignIn(ctx context.Context, in *SignInReq, opts ...client.
 	return out, nil
 }
 
+func (c *userService) GetPersonalInfo(ctx context.Context, in *GetPersonalInfoReq, opts ...client.CallOption) (*GetPersonalInfoRsp, error) {
+	req := c.c.NewRequest(c.name, "User.GetPersonalInfo", in)
+	out := new(GetPersonalInfoRsp)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *userService) Auth(ctx context.Context, in *AuthReq, opts ...client.CallOption) (*AuthRsp, error) {
 	req := c.c.NewRequest(c.name, "User.Auth", in)
 	out := new(AuthRsp)
@@ -94,6 +105,7 @@ func (c *userService) Auth(ctx context.Context, in *AuthReq, opts ...client.Call
 type UserHandler interface {
 	SignUp(context.Context, *SignUpReq, *SignUpRsp) error
 	SignIn(context.Context, *SignInReq, *SignInRsp) error
+	GetPersonalInfo(context.Context, *GetPersonalInfoReq, *GetPersonalInfoRsp) error
 	Auth(context.Context, *AuthReq, *AuthRsp) error
 }
 
@@ -101,6 +113,7 @@ func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.Handl
 	type user interface {
 		SignUp(ctx context.Context, in *SignUpReq, out *SignUpRsp) error
 		SignIn(ctx context.Context, in *SignInReq, out *SignInRsp) error
+		GetPersonalInfo(ctx context.Context, in *GetPersonalInfoReq, out *GetPersonalInfoRsp) error
 		Auth(ctx context.Context, in *AuthReq, out *AuthRsp) error
 	}
 	type User struct {
@@ -120,6 +133,10 @@ func (h *userHandler) SignUp(ctx context.Context, in *SignUpReq, out *SignUpRsp)
 
 func (h *userHandler) SignIn(ctx context.Context, in *SignInReq, out *SignInRsp) error {
 	return h.UserHandler.SignIn(ctx, in, out)
+}
+
+func (h *userHandler) GetPersonalInfo(ctx context.Context, in *GetPersonalInfoReq, out *GetPersonalInfoRsp) error {
+	return h.UserHandler.GetPersonalInfo(ctx, in, out)
 }
 
 func (h *userHandler) Auth(ctx context.Context, in *AuthReq, out *AuthRsp) error {
