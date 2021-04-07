@@ -14,8 +14,7 @@ var (
 )
 
 type CustomClaims struct {
-	Username string
-	Password string
+	protobuf.UserInfo
 	jwt.StandardClaims
 }
 
@@ -38,5 +37,6 @@ func (u UserApi) Auth(
 	rsp.Password = claims.Password
 	rsp.Code = 0
 	rsp.Msg = "success"
+	log.Info(claims)
 	return err
 }

@@ -30,6 +30,7 @@ func (u UserApi) SignUp(
 		Password: req.Password,
 		Sex:      req.Sex,
 		Phone:    req.Phone,
+		Role:     "读者",
 	}
 	_, err = db.Table("user_info").Save(user)
 	if err != nil {
@@ -49,17 +50,14 @@ func (u UserApi) SignIn(
 	if user.Map()["password"] != req.Password {
 		return err
 	}
-	expireTime := time.Now().Add(time.Hour * 24 * 3).Unix()
-	claims := CustomClaims{
-		req.Username,
-		req.Password,
-		jwt.StandardClaims{
-			Issuer:    "token_service", // 签发者
-			ExpiresAt: expireTime,
-		},
+	userInfo := protobuf.UserInfo{
+		Username: user.Map()["username"].(string),
+		Password: user.Map()["password"].(string),
+		Sex:      user.Map()["sex"].(string),
+		Phone:    user.Map()["phone"].(string),
+		Role:     user.Map()["role"].(string),
 	}
-	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	rsp.Token, err = jwtToken.SignedString(privateKey)
+	rsp.Token = generateToken(userInfo)
 	rsp.Code = 0
 	rsp.Msg = "success"
 	return err
@@ -94,4 +92,21 @@ func isExisted(username string) (bool, error) {
 		return true, nil
 	}
 	return false, nil
+}
+
+func generateToken(user protobuf.UserInfo) string {
+	expireTime := time.Now().Add(time.Hour * 24 * 3).Unix()
+	claims := CustomClaims{
+		user,
+		jwt.StandardClaims{
+			Issuer:    "token_service", // 签发者
+			ExpiresAt: expireTime,
+		},
+	}
+	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	stringToken, err := jwtToken.SignedString(privateKey)
+	if err != nil {
+		return ""
+	}
+	return stringToken
 }
