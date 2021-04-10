@@ -40,8 +40,12 @@ message SignInRsp {
     string token = 3;
 }
 
-message GetPersonalInfoReq {}
+message GetPersonalInfoReq {
+    string username = 1;
+}
 
 message GetPersonalInfoRsp {
-    UserInfo user = 1;
+    int64 code = 1;
+    string msg = 2;
+    UserInfo user = 3;
 }

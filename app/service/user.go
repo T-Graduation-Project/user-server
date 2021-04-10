@@ -77,18 +77,29 @@ func (u UserApi) SignIn(
 
 func (u UserApi) GetPersonalInfo(
 	ctx context.Context, req *protobuf.GetPersonalInfoReq, rsp *protobuf.GetPersonalInfoRsp) error {
-	//rsp.Code = 1
-	//rsp.Msg = "sign up error"
-	//flag, err := isExisted(req.Username)
-	//if err != nil {
-	//	return err
-	//}
-	//if flag == false {
-	//	rsp.Msg = "user not exist"
-	//	return err
-	//}
-	//rsp.Code = 0
-	//rsp.Msg = "success"
+	rsp.Code = 1
+	rsp.Msg = "get personal info error"
+	flag, err := isExisted(req.Username)
+	if err != nil {
+		return err
+	}
+	if flag == false {
+		rsp.Msg = "user not exist"
+		return err
+	}
+	user, err := db.Table("user_info").Where("username=?", req.Username).One()
+	rsp.User = &protobuf.UserInfo{
+		Username: user.Map()["username"].(string),
+		Password: user.Map()["password"].(string),
+		Sex:      user.Map()["sex"].(string),
+		Phone:    user.Map()["phone"].(string),
+		Role:     user.Map()["role"].(string),
+	}
+	if err != nil {
+		return err
+	}
+	rsp.Code = 0
+	rsp.Msg = "success"
 	return nil
 }
 
