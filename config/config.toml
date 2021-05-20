@@ -1,4 +1,4 @@
-# Logger configurations.
+registry_addr = "121.5.238.116:2379"
 [logger]
     Path   = "/tmp/log/server"
     Level  = "all"
